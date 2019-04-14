@@ -11,6 +11,9 @@ const blockSize = 10;
 const widthInBlocks = width / blockSize;
 const heightInBlocks = height / blockSize;
 
+// Set beginning score to zero.
+let score = 0;
+
 // Utility functions
 const drawBorder = () => {
   ctx.fillStyle = 'Gray';
@@ -21,27 +24,22 @@ const drawBorder = () => {
 };
 
 const drawScore = () => {
-  ctx.font = '20px Courier';
+  ctx.font = '32px Cute Font';
   ctx.fillStyle = 'Black';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.fillText(`Score: ${score}`, blockSize, blockSize);
+  ctx.fillText(`Score: ${score}`, blockSize + 3, blockSize - 3);
 };
 
-const circle = (x, y, radius, fillCircle) => {
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2, false);
-
-  if (fillCircle) {
-    ctx.fill();
-  } else {
-    ctx.stroke();
-  }
-};
+// const circle = (x, y, radius) => {
+//   ctx.beginPath();
+//   ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+//   ctx.fill();
+// };
 
 const gameOver = () => {
   clearInterval(intervalId);
-  ctx.font = '60px Courier';
+  ctx.font = '80px Creepster';
   ctx.fillStyle = 'Black';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -63,7 +61,10 @@ class Block {
     const x = this.col * blockSize + blockSize / 2;
     const y = this.row * blockSize + blockSize / 2;
     ctx.fillStyle = color;
-    circle(x, y, blockSize / 2, true);
+    // circle(x, y, blockSize / 2);
+    ctx.beginPath();
+    ctx.arc(x, y, blockSize / 2, 0, Math.PI * 2, false);
+    ctx.fill();
   }
   equal(otherBlock) {
     return this.col === otherBlock.col && this.row === otherBlock.row;
@@ -174,8 +175,6 @@ class Apple {
 // Create the snake and apple.
 const snake = new Snake();
 const apple = new Apple();
-// Set beginning score to zero.
-let score = 0;
 
 // Set up keyboard event handler for snake controls.
 const directions = {

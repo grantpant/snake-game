@@ -31,12 +31,6 @@ const drawScore = () => {
   ctx.fillText(`Score: ${score}`, blockSize + 3, blockSize - 3);
 };
 
-// const circle = (x, y, radius) => {
-//   ctx.beginPath();
-//   ctx.arc(x, y, radius, 0, Math.PI * 2, false);
-//   ctx.fill();
-// };
-
 const gameOver = () => {
   clearInterval(intervalId);
   ctx.font = '80px Creepster';
@@ -61,7 +55,6 @@ class Block {
     const x = this.col * blockSize + blockSize / 2;
     const y = this.row * blockSize + blockSize / 2;
     ctx.fillStyle = color;
-    // circle(x, y, blockSize / 2);
     ctx.beginPath();
     ctx.arc(x, y, blockSize / 2, 0, Math.PI * 2, false);
     ctx.fill();
@@ -82,8 +75,14 @@ class Snake {
     this.nextDirection = 'right';
   }
   draw() {
-    this.segments.forEach((segment) => {
-      segment.drawSquare('Blue');
+    this.segments.forEach((segment, i) => {
+      if (i === 0) {
+        segment.drawSquare('#ffe500');
+      } else if (i % 2 === 0) {
+        segment.drawSquare('#dd3300');
+      } else {
+        segment.drawSquare('Green');
+      }
     });
   }
   move() {

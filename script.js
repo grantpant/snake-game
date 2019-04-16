@@ -45,20 +45,6 @@ class Block {
     this.col = col;
     this.row = row;
   }
-  drawSquare(color) {
-    const x = this.col * blockSize;
-    const y = this.row * blockSize;
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, blockSize, blockSize);
-  }
-  drawCircle(color) {
-    const x = this.col * blockSize + blockSize / 2;
-    const y = this.row * blockSize + blockSize / 2;
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(x, y, blockSize / 2, 0, Math.PI * 2, false);
-    ctx.fill();
-  }
   equal(otherBlock) {
     return this.col === otherBlock.col && this.row === otherBlock.row;
   }
@@ -75,13 +61,20 @@ class Snake {
     this.nextDirection = 'right';
   }
   draw() {
+    const drawSegment = (col, row, color) => {
+      const x = col * blockSize;
+      const y = row * blockSize;
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, blockSize, blockSize);
+    };
+
     this.segments.forEach((segment, i) => {
       if (i === 0) {
-        segment.drawSquare('#ffe500');
+        drawSegment(segment.col, segment.row, '#ffe500');
       } else if (i % 2 === 0) {
-        segment.drawSquare('#dd3300');
+        drawSegment(segment.col, segment.row, '#dd3300');
       } else {
-        segment.drawSquare('Green');
+        drawSegment(segment.col, segment.row, 'Green');
       }
     });
   }
@@ -119,6 +112,11 @@ class Snake {
       // ... move the apple...
       apple.move();
       // ... If not, just remove the last tail segment.
+      snake.segments.forEach((segment) => {
+        if (apple.position.col === segment.col && apple.position.row === segment.row) {
+          apple.move();
+        }
+      });
     } else {
       this.segments.pop();
     }
@@ -162,12 +160,23 @@ class Apple {
     this.position = new Block(10, 10);
   }
   draw() {
-    this.position.drawCircle('LimeGreen');
+    const x = this.position.col * blockSize + blockSize / 2;
+    const y = this.position.row * blockSize + blockSize / 2;
+    ctx.fillStyle = 'LimeGreen';
+    ctx.beginPath();
+    ctx.arc(x, y, blockSize / 2, 0, Math.PI * 2, false);
+    ctx.fill();
   }
   move() {
     const randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
     const randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
     this.position = new Block(randomCol, randomRow);
+  }
+  // Moves apple to snake tail to test logic in
+  badMove() {
+    const badCol = snake.segments[snake.segments.length - 1].col;
+    const badRow = snake.segments[snake.segments.length - 1].row;
+    this.position = new Block(badCol, badRow);
   }
 }
 
